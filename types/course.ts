@@ -4,7 +4,7 @@ export type CourseCategory =
     | "core"
     | "technical-elective"
     | "complementary-studies"
-    | "nautural-science"
+    | "natural-science"
     | "pd"
     | "coop"
     | "milestone"
@@ -33,7 +33,7 @@ export type Course = {
     term: string;
     category: CourseCategory;
     description?: string;
-    Prerequisites?: string[];
-    FocusArea?: FocusArea[];
+    prerequisites?: string[];
+    focusAreas?: FocusArea[];
     units?: number;
 };
