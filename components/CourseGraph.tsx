@@ -60,41 +60,46 @@ function getCategoryClass(category: string) {
     // directed graph - one directsion from prereq to course
     //
 //Course = > Node, and prereq relationships = Edges
-const nodes: Node[] = courses.map((course, index) => ({ //.map turns one list into other list - concverts course data into reactflow node data
-  id: course.id,
-  position: {
-    x: termX[course.term] ?? 0,
-    y: (index % 6) * 140,
-  },
-  data: {
-    label: (
-      <div
-        className={`w-52 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur ${getCategoryClass(
-          course.category
-        )}`}
-      >
-        <p className="text-sm font-bold text-white">{course.code}</p>
+const termCounts: Record<string, number> = {};
 
-        <p className="mt-1 text-xs leading-snug text-neutral-200">
-          {course.title}
-        </p>
+const nodes: Node[] = courses.map((course) => {
+  const countInTerm = termCounts[course.term] ?? 0;
+  termCounts[course.term] = countInTerm + 1;
 
-        <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-yellow-300">
-          {course.term}
-        </p>
-      </div>
-    ),
-  },
-  type: "default",
+  return {
+    id: course.id,
+    position: {
+      x: termX[course.term] ?? 0,
+      y: countInTerm * 150,
+    },
+    data: {
+      label: (
+        <div
+          className={`w-52 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur ${getCategoryClass(
+            course.category
+          )}`}
+        >
+          <p className="text-sm font-bold text-white">{course.code}</p>
 
-  // removes reactflows default white node box
-  style: {
-    background: "transparent",
-    border: "none",
-    padding: 0,
-    width: 208,
-  },
-}));
+          <p className="mt-1 text-xs leading-snug text-neutral-200">
+            {course.title}
+          </p>
+
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-yellow-300">
+            {course.term}
+          </p>
+        </div>
+      ),
+    },
+    type: "default",
+    style: {
+      background: "transparent",
+      border: "none",
+      padding: 0,
+      width: 208,
+    },
+  };
+});
 // prerequisite relationships -> edges, animated for visual effect
 const edges: Edge[] = courses.flatMap((course) =>
   (course.prerequisites ?? []).map((prereq) => ({
