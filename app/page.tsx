@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import CourseGraph from "../components/CourseGraph";
-
+import Legend from "../components/Legend";
 
 export default function Home() {
   return (
@@ -8,6 +8,7 @@ export default function Home() {
       <Header />
 
       <section className="px-6 py-8">
+        
      <div className="mb-5 flex flex-col gap-2">
           <p className="text-sm uppercase tracking-[0.25em] text-yellow-400">
             Prototype View
@@ -23,7 +24,11 @@ export default function Home() {
           </p>
         </div>
 
+         <div className="mb-5">
+          <Legend />
+        </div>
         <CourseGraph />
+
 
       </section>
     </main>
