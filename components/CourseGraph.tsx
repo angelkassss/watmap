@@ -65,6 +65,7 @@ function getCategoryClass(category: string) {
 
 type CourseGraphProps = {
   onCourseSelect: (course: Course) => void;
+  onClearSelection: () => void;
 };
 
 const termCounts: Record<string, number> = {};
@@ -126,7 +127,10 @@ const edges: Edge[] = courses.flatMap((course) =>
   }))
 );
 
-export default function CourseGraph({ onCourseSelect }: CourseGraphProps) {
+export default function CourseGraph({
+  onCourseSelect,
+  onClearSelection,
+}: CourseGraphProps) {
   const handleNodeClick: NodeMouseHandler = (_event, node) => {
   const selectedCourse = courses.find((course) => course.id === node.id);
 
@@ -141,6 +145,7 @@ export default function CourseGraph({ onCourseSelect }: CourseGraphProps) {
         edges={edges}
         fitView
         onNodeClick={handleNodeClick}
+        onPaneClick={onClearSelection}
       >
         <Background color="#525252" gap={18} />
         <Controls />

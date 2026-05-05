@@ -35,7 +35,10 @@ export default function Home() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-          <CourseGraph onCourseSelect={setSelectedCourse} />
+          <CourseGraph 
+          onCourseSelect={setSelectedCourse} 
+          onClearSelection={() => setSelectedCourse(null)} 
+          />
           <CourseSidebar selectedCourse={selectedCourse} />
         </div>
       </section>
