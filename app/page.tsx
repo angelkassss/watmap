@@ -1,35 +1,43 @@
+"use client";
+
+import { useState } from "react";
 import Header from "../components/Header";
 import CourseGraph from "../components/CourseGraph";
 import Legend from "../components/Legend";
+import CourseSidebar from "../components/CourseSidebar";
+import { Course } from "../types/course";
 
 export default function Home() {
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
   return (
     <main className="min-h-screen bg-neutral-950 text-white">
       <Header />
 
       <section className="px-6 py-8">
-        
-     <div className="mb-5 flex flex-col gap-2">
+        <div className="mb-5 flex flex-col gap-2">
           <p className="text-sm uppercase tracking-[0.25em] text-yellow-400">
             Prototype View
           </p>
 
-        <h2 className="text-2xl font-semibold">
+          <h2 className="text-2xl font-semibold">
             Waterloo ECE Curriculum Map
           </h2>
 
           <p className="max-w-2xl text-neutral-300">
             Drag, zoom, and explore the first version of the Waterloo ECE course
-            graph. Prerequisite relationships are shown as animated links.
+            graph. Click a course to view its details.
           </p>
         </div>
 
-         <div className="mb-5">
+        <div className="mb-5">
           <Legend />
         </div>
-        <CourseGraph />
 
-
+        <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+          <CourseGraph onCourseSelect={setSelectedCourse} />
+          <CourseSidebar selectedCourse={selectedCourse} />
+        </div>
       </section>
     </main>
   );

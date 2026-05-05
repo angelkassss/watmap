@@ -11,7 +11,9 @@ import {
   Node,
   Edge,
   MarkerType,
+  NodeMouseHandler
 } from "@xyflow/react";
+import { Course } from "../types/course";
 import { courses } from "../data/courses";
 
 // "temrX" is a mapping of term names to x-coordinates for graph layout
@@ -60,6 +62,11 @@ function getCategoryClass(category: string) {
     // directed graph - one directsion from prereq to course
     //
 //Course = > Node, and prereq relationships = Edges
+
+type CourseGraphProps = {
+  onCourseSelect: (course: Course) => void;
+};
+
 const termCounts: Record<string, number> = {};
 
 const nodes: Node[] = courses.map((course) => {
@@ -119,10 +126,22 @@ const edges: Edge[] = courses.flatMap((course) =>
   }))
 );
 
-export default function CourseGraph() {
+export default function CourseGraph({ onCourseSelect }: CourseGraphProps) {
+  const handleNodeClick: NodeMouseHandler = (_event, node) => {
+  const selectedCourse = courses.find((course) => course.id === node.id);
+
+  if (selectedCourse) {
+    onCourseSelect(selectedCourse);
+  }
+};
   return (
     <div className="h-[75vh] overflow-hidden rounded-3xl border border-yellow-500/30 bg-neutral-950">
-      <ReactFlow nodes={nodes} edges={edges} fitView>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        fitView
+        onNodeClick={handleNodeClick}
+      >
         <Background color="#525252" gap={18} />
         <Controls />
       </ReactFlow>
