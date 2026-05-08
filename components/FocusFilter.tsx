@@ -2,13 +2,12 @@ import { FocusArea } from "../types/course";
 
 //type aliasing in typescript to describe the propsitions that the focus filter component will receive from its parent component (app/page.tsx)
 type FocusFilterProps = {
-  selectedFocus: FocusArea | null; //either no focus area or a speciffic focus area 
+  selectedFocus: FocusArea | null; //either no focus area or a speciffic focus area
   onFocusChange: (focus: FocusArea | null) => void; //function: update state of the selected focus area
 };
 
-//Current focus options 
+//Current focus options
 const focusOptions: { label: string; value: FocusArea }[] = [
-
   { label: "Software", value: "software" },
   { label: "Hardware", value: "hardware" },
   { label: "Systems", value: "systems" },
@@ -25,11 +24,13 @@ const focusOptions: { label: string; value: FocusArea }[] = [
   { label: "Power / Control", value: "power-control" },
 ];
 
-export default function FocusFilter({selectedFocus,onFocusChange,}: FocusFilterProps) { //def react component "Focus Filter" that takes in the props defined by the "FocusFilterProps" type alias
-
+export default function FocusFilter({
+  selectedFocus,
+  onFocusChange,
+}: FocusFilterProps) {
+  //def react component "Focus Filter" that takes in the props defined by the "FocusFilterProps" type alias
   return (
     <div className="rounded-2xl border border-yellow-500/20 bg-black/40 p-4">
-
       <div className="mb-3 flex items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yellow-400">
           Focus Paths
@@ -52,7 +53,8 @@ export default function FocusFilter({selectedFocus,onFocusChange,}: FocusFilterP
             <button
               key={option.value}
               type="button"
-              onClick={() => onFocusChange(option.value)}
+              // UI fix -> if the user clicks the selected filter again, the filter gets cleared aka show all courses
+              onClick={() => onFocusChange(isSelected ? null : option.value)}
               className={`rounded-full border px-3 py-2 text-xs transition ${
                 isSelected
                   ? "border-yellow-300 bg-yellow-400/20 text-yellow-100"
