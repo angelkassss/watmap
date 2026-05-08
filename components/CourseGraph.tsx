@@ -1,7 +1,6 @@
+"use client"; // runs on client side aka on browser -  Mouse dragging + zomming in n out + clicking on nodes to see details + panning around the graph
 
-"use client";// runs on client side aka on browser -  Mouse dragging + zomming in n out + clicking on nodes to see details + panning around the graph
-
-//imports graph lib, course data that were built 
+//imports graph lib, course data that were built
 
 import "@xyflow/react/dist/style.css";
 import {
@@ -11,13 +10,15 @@ import {
   Node,
   Edge,
   MarkerType,
-  NodeMouseHandler
+  NodeMouseHandler,
 } from "@xyflow/react";
-import { Course } from "../types/course";
+
 import { courses } from "../data/courses";
+import { Course, FocusArea } from "../types/course";
 
 // "temrX" is a mapping of term names to x-coordinates for graph layout
-const termX: Record<string, number> = { //Object Record used stings as keys and number as values
+const termX: Record<string, number> = {
+  //Object Record used stings as keys and number as values
   "1A": 0, //key(string) : value(number)
   "1B": 320,
   "2A": 640,
@@ -27,7 +28,8 @@ const termX: Record<string, number> = { //Object Record used stings as keys and 
   "4A": 1920,
   "4B": 2240,
 };
-//Graph construction logic: Left to right 
+
+//Graph construction logic: Left to right
 //1a -> 1b -> 2a -> 2b -> 3a -> 3b -> 4a -> 4b
 
 //every course -> converted unto a visual node w/ corresponding colours
@@ -40,7 +42,7 @@ const termX: Record<string, number> = { //Object Record used stings as keys and 
 // capstone = orange
 function getCategoryClass(category: string) {
   switch (category) {
-    case "core": 
+    case "core":
       return "border-yellow-400 bg-yellow-400/15";
     case "technical-elective":
       return "border-blue-400 bg-blue-400/15";
@@ -58,86 +60,165 @@ function getCategoryClass(category: string) {
       return "border-neutral-500 bg-neutral-800";
   }
 }
+
 //Graph Theory
-    // directed graph - one directsion from prereq to course
-    //
+// directed graph - one directsion from prereq to course
+//
 //Course = > Node, and prereq relationships = Edges
 
 type CourseGraphProps = {
   onCourseSelect: (course: Course) => void;
   onClearSelection: () => void;
+  selectedFocus: FocusArea | null;
 };
 
-const termCounts: Record<string, number> = {};
+// const termCounts: Record<string, number> = {};
 
-const nodes: Node[] = courses.map((course) => {
-  const countInTerm = termCounts[course.term] ?? 0;
-  termCounts[course.term] = countInTerm + 1;
+// const nodes: Node[] = courses.map((course) => {
+//   const countInTerm = termCounts[course.term] ?? 0;
+//   termCounts[course.term] = countInTerm + 1;
 
-  return {
-    id: course.id,
-    position: {
-      x: termX[course.term] ?? 0,
-      y: countInTerm * 150,
-    },
-    data: {
-      label: (
-        <div
-          className={`w-52 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur ${getCategoryClass(
-            course.category
-          )}`}
-        >
-          <p className="text-sm font-bold text-white">{course.code}</p>
+//   return {
+//     id: course.id,
+//     position: {
+//       x: termX[course.term] ?? 0,
+//       y: countInTerm * 150,
+//     },
+//     data: {
+//       label: (
+//         <div
+//           className={`w-52 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur ${getCategoryClass(
+//             course.category
+//           )}`}
+//         >
+//           <p className="text-sm font-bold text-white">{course.code}</p>
 
-          <p className="mt-1 text-xs leading-snug text-neutral-200">
-            {course.title}
-          </p>
+//           <p className="mt-1 text-xs leading-snug text-neutral-200">
+//             {course.title}
+//           </p>
 
-          <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-yellow-300">
-            {course.term}
-          </p>
-        </div>
-      ),
-    },
-    type: "default",
-    style: {
-      background: "transparent",
-      border: "none",
-      padding: 0,
-      width: 208,
-    },
-  };
-});
-// prerequisite relationships -> edges, animated for visual effect
-const edges: Edge[] = courses.flatMap((course) =>
-  (course.prerequisites ?? []).map((prereq) => ({
-    id: `${prereq}-${course.id}`,
-    source: prereq,
-    target: course.id,
-    type: "smoothstep",
-    animated: true,
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: "#facc15",
-    },
-    style: {
-      stroke: "#facc15",
-      strokeWidth: 2,
-    },
-  }))
-);
+//           <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-yellow-300">
+//             {course.term}
+//           </p>
+//         </div>
+//       ),
+//     },
+//     type: "default",
+//     style: {
+//       background: "transparent",
+//       border: "none",
+//       padding: 0,
+//       width: 208,
+//     },
+//   };
+// });
+// // prerequisite relationships -> edges, animated for visual effect
+// const edges: Edge[] = courses.flatMap((course) =>
+//   (course.prerequisites ?? []).map((prereq) => ({
+//     id: `${prereq}-${course.id}`,
+//     source: prereq,
+//     target: course.id,
+//     type: "smoothstep",
+//     animated: true,
+//     markerEnd: {
+//       type: MarkerType.ArrowClosed,
+//       color: "#facc15",
+//     },
+//     style: {
+//       stroke: "#facc15",
+//       strokeWidth: 2,
+//     },
+//   }))
+// );
 
 export default function CourseGraph({
   onCourseSelect,
   onClearSelection,
+  selectedFocus,
 }: CourseGraphProps) {
-  const handleNodeClick: NodeMouseHandler = (_event, node) => {
-  const selectedCourse = courses.find((course) => course.id === node.id);
+  const termCounts: Record<string, number> = {};
 
-  if (selectedCourse) {
-    onCourseSelect(selectedCourse);
-  }
-};
+  const nodes: Node[] = courses.map((course) => {
+    const countInTerm = termCounts[course.term] ?? 0;
+    termCounts[course.term] = countInTerm + 1;
+
+    const matchesSelectedFocus =
+      !selectedFocus || course.focusAreas?.includes(selectedFocus);
+
+    return {
+      id: course.id,
+      position: {
+        x: termX[course.term] ?? 0,
+        y: countInTerm * 150,
+      },
+      data: {
+        label: (
+          <div
+            className={`w-52 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur transition ${getCategoryClass(
+              course.category
+            )} ${
+              matchesSelectedFocus ? "opacity-100" : "opacity-25 grayscale"
+            }`}
+          >
+            <p className="text-sm font-bold text-white">{course.code}</p>
+
+            <p className="mt-1 text-xs leading-snug text-neutral-200">
+              {course.title}
+            </p>
+
+            <p className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-yellow-300">
+              {course.term}
+            </p>
+          </div>
+        ),
+      },
+      type: "default",
+      style: {
+        background: "transparent",
+        border: "none",
+        padding: 0,
+        width: 208,
+      },
+    };
+  });
+
+  // prerequisite relationships -> edges, animated for visual effect
+  const edges: Edge[] = courses.flatMap((course) =>
+    (course.prerequisites ?? []).map((prereq) => {
+      const sourceCourse = courses.find((c) => c.id === prereq);
+
+      const edgeMatchesFocus =
+        !selectedFocus ||
+        course.focusAreas?.includes(selectedFocus) ||
+        sourceCourse?.focusAreas?.includes(selectedFocus);
+
+      return {
+        id: `${prereq}-${course.id}`,
+        source: prereq,
+        target: course.id,
+        type: "smoothstep",
+        animated: edgeMatchesFocus,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: edgeMatchesFocus ? "#facc15" : "#525252",
+        },
+        style: {
+          stroke: edgeMatchesFocus ? "#facc15" : "#525252",
+          strokeWidth: edgeMatchesFocus ? 2.5 : 1,
+          opacity: edgeMatchesFocus ? 1 : 0.25,
+        },
+      };
+    })
+  );
+
+  const handleNodeClick: NodeMouseHandler = (_event, node) => {
+    const selectedCourse = courses.find((course) => course.id === node.id);
+
+    if (selectedCourse) {
+      onCourseSelect(selectedCourse);
+    }
+  };
+
   return (
     <div className="h-[75vh] overflow-hidden rounded-3xl border border-yellow-500/30 bg-neutral-950">
       <ReactFlow

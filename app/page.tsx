@@ -5,10 +5,13 @@ import Header from "../components/Header";
 import CourseGraph from "../components/CourseGraph";
 import Legend from "../components/Legend";
 import CourseSidebar from "../components/CourseSidebar";
-import { Course } from "../types/course";
+// import { Course } from "../types/course";
+import FocusFilter from "../components/FocusFilter";
+import { Course, FocusArea } from "../types/course";
 
 export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedFocus, setSelectedFocus] = useState<FocusArea | null>(null); //added a new focusArea state 
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white">
@@ -34,8 +37,16 @@ export default function Home() {
           <Legend />
         </div>
 
+        <div className="mb-5">
+        <FocusFilter
+          selectedFocus={selectedFocus}
+          onFocusChange={setSelectedFocus}
+        />
+      </div>
+
         <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
           <CourseGraph 
+          selectedFocus={selectedFocus}
           onCourseSelect={setSelectedCourse} 
           onClearSelection={() => setSelectedCourse(null)} 
           />
