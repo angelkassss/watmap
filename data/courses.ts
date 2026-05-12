@@ -2,7 +2,6 @@ import { Course } from "@/types/course";
 
 export const courses: Course[] = [
   {
-    //starter dataset - NOT COMPLETE - just a few courses to get the ball rolling
     id: "ece105",
     code: "ECE 105",
     title: "Classical Mechanics",
@@ -11,8 +10,10 @@ export const courses: Course[] = [
     description: "Foundational mechanics course for first-year ECE students.",
     focusAreas: ["hardware", "control-systems"],
     units: 0.5,
-  },
 
+    primaryClusterId: "core",
+    categoryIds: ["hardware", "control-systems"],
+  },
   {
     id: "ece150",
     code: "ECE 150",
@@ -22,8 +23,10 @@ export const courses: Course[] = [
     description: "Introductory programming course for ECE students.",
     focusAreas: ["software", "systems"],
     units: 0.5,
-  },
 
+    primaryClusterId: "core",
+    categoryIds: ["software", "systems"],
+  },
   {
     id: "ece124",
     code: "ECE 124",
@@ -33,8 +36,10 @@ export const courses: Course[] = [
     description: "Introduction to digital logic and digital system design.",
     focusAreas: ["hardware", "embedded", "computer-architecture"],
     units: 0.5,
-  },
 
+    primaryClusterId: "hardware-networks",
+    categoryIds: ["hardware", "embedded", "computer-architecture"],
+  },
   {
     id: "ece140",
     code: "ECE 140",
@@ -44,8 +49,10 @@ export const courses: Course[] = [
     description: "Foundational circuit analysis course.",
     focusAreas: ["circuits", "hardware"],
     units: 0.5,
-  },
 
+    primaryClusterId: "circuits-electronics",
+    categoryIds: ["circuits", "hardware"],
+  },
   {
     id: "ece250",
     code: "ECE 250",
@@ -56,20 +63,25 @@ export const courses: Course[] = [
     prerequisites: ["ece150"],
     focusAreas: ["software", "systems", "theory"],
     units: 0.5,
-  },
 
+    primaryClusterId: "software",
+    categoryIds: ["software", "systems", "theory"],
+  },
   {
     id: "ece252",
     code: "ECE 252",
     title: "Systems Programming and Concurrency",
     term: "2B",
     category: "core",
-    description: "Systems programming, processes, threads, synchronization, and concurrency.",
+    description:
+      "Systems programming, processes, threads, synchronization, and concurrency.",
     prerequisites: ["ece250"],
     focusAreas: ["software", "systems"],
     units: 0.5,
-  },
 
+    primaryClusterId: "software",
+    categoryIds: ["software", "systems"],
+  },
   {
     id: "ece350",
     code: "ECE 350",
@@ -80,5 +92,8 @@ export const courses: Course[] = [
     prerequisites: ["ece252"],
     focusAreas: ["systems", "embedded"],
     units: 0.5,
+    
+    primaryClusterId: "software",
+    categoryIds: ["systems", "embedded"],
   },
 ];

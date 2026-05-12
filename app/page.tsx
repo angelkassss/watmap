@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Header from "../components/Header";
-import CourseGraph from "../components/CourseGraph";
+//import CourseGraph from "../components/CourseGraph";
 import Legend from "../components/Legend";
 import CourseSidebar from "../components/CourseSidebar";
 // import { Course } from "../types/course";
 import FocusFilter from "../components/FocusFilter";
 import { Course, FocusArea } from "../types/course";
+import ClusterMap from "../components/ClusterMap";
 
 export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -45,11 +46,16 @@ export default function Home() {
       </div>
 
         <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-          <CourseGraph 
-          selectedFocus={selectedFocus}
-          onCourseSelect={setSelectedCourse} 
-          onClearSelection={() => setSelectedCourse(null)} 
+          {/* <CourseGraph 
+                selectedFocus={selectedFocus}
+                onCourseSelect={setSelectedCourse} 
+                onClearSelection={() => setSelectedCourse(null)} 
+            /> */}
+          <ClusterMap
+            onCourseSelect={setSelectedCourse}
+            onClearSelection={() => setSelectedCourse(null)}
           />
+
           <CourseSidebar selectedCourse={selectedCourse} />
         </div>
       </section>
