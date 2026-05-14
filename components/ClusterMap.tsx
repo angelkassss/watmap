@@ -16,6 +16,7 @@ import "@xyflow/react/dist/style.css";
 import { courses } from "@/data/courses";
 import { clusters } from "@/data/clusters";
 import { ClusterId, Course } from "@/types/course";
+import CourseChipNode from "./CourseChipNode";
 
 type ClusterMapProps = {
   onCourseSelect: (course: Course) => void;
@@ -41,11 +42,48 @@ export default function ClusterMap({
     );
   }
 
+  const courseNodes: Node[] = courses
+    .filter((course) => openClusters.includes(course.primaryClusterId))
+    .map((course) => {
+      const parentCluster = clusters.find(
+        (cluster) => cluster.id === course.primaryClusterId
+      );
+
+      if (!parentCluster) return null;
+
+      const clusterCourses = courses.filter(
+        (c) => c.primaryClusterId === parentCluster.id
+      );
+
+      const localIndex = clusterCourses.findIndex((c) => c.id === course.id);
+
+      const columns = 2;
+      const column = localIndex % columns;
+      const row = Math.floor(localIndex / columns);
+
+      return {
+        id: course.id,
+        position: {
+          x: parentCluster.center.x - parentCluster.width / 2 + 30 + column * 180,
+          y: parentCluster.center.y - parentCluster.height / 2 + 80 + row * 110,
+        },
+        data: {
+          label: <CourseChipNode course={course} />,
+        },
+        type: "default",
+        draggable: false,
+        style: {
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          width: 160,
+        },
+      };
+    })
+    .filter(Boolean) as Node[];
+
   const clusterNodes: Node[] = clusters.map((cluster) => {
     const isOpen = openClusters.includes(cluster.id);
-    const clusterCourses = courses.filter(
-      (course) => course.primaryClusterId === cluster.id
-    );
 
     return {
       id: `cluster-${cluster.id}`,
@@ -82,35 +120,7 @@ export default function ClusterMap({
               </span>
             </div>
 
-            {isOpen ? (
-              <div className="grid grid-cols-2 gap-2">
-                {clusterCourses.map((course) => (
-                  <button
-                    key={course.id}
-                    type="button"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onCourseSelect(course);
-                    }}
-                    className="rounded-xl border border-yellow-400/30 bg-yellow-400/10 px-3 py-2 text-left transition hover:border-yellow-300 hover:bg-yellow-400/20"
-                  >
-                    <p className="text-xs font-bold text-white">
-                      {course.code}
-                    </p>
-
-                    <p className="mt-1 line-clamp-2 text-[10px] text-neutral-300">
-                      {course.title}
-                    </p>
-                  </button>
-                ))}
-
-                {clusterCourses.length === 0 && (
-                  <p className="col-span-2 text-xs text-neutral-500">
-                    No courses added yet.
-                  </p>
-                )}
-              </div>
-            ) : (
+            {!isOpen && (
               <p className="mt-8 text-xs text-neutral-400">
                 Click to expand this cluster.
               </p>
@@ -139,12 +149,13 @@ export default function ClusterMap({
   const edges: Edge[] = courses.flatMap((course) =>
     (course.prerequisites ?? [])
       .filter(
-        (prereq) => visibleCourseIds.has(prereq) && visibleCourseIds.has(course.id)
+        (prereq) =>
+          visibleCourseIds.has(prereq) && visibleCourseIds.has(course.id)
       )
       .map((prereq) => ({
         id: `${prereq}-${course.id}`,
-        source: `cluster-${courses.find((c) => c.id === prereq)?.primaryClusterId}`,
-        target: `cluster-${course.primaryClusterId}`,
+        source: prereq,
+        target: course.id,
         type: "smoothstep",
         animated: true,
         markerEnd: {
@@ -158,14 +169,19 @@ export default function ClusterMap({
       }))
   );
 
-  const handleNodeClick: NodeMouseHandler = () => {
-    // cluster clicking is handled inside the label
+  const handleNodeClick: NodeMouseHandler = (_event, node) => {
+    const selectedCourse = courses.find((course) => course.id === node.id);
+
+    if (selectedCourse) {
+      onCourseSelect(selectedCourse);
+    }
   };
 
   return (
-    <div className="h-[75vh] overflow-hidden rounded-3xl border border-yellow-500/30 bg-neutral-950">
+    //this container is responsible for clipping overflowing edges when clusters are closed, as well as providing a background and border
+    <div className="relative h-[75vh] overflow-hidden rounded-3xl border border-yellow-500/30 bg-[#050505]"> 
       <ReactFlow
-        nodes={clusterNodes}
+        nodes={[...clusterNodes, ...courseNodes]}
         edges={edges}
         fitView
         fitViewOptions={{
