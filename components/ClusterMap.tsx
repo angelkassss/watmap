@@ -64,8 +64,16 @@ export default function ClusterMap({
       return {
         id: course.id,
         position: {
-          x: parentCluster.center.x - parentCluster.width / 2 + 30 + column * 180,
-          y: parentCluster.center.y - parentCluster.height / 2 + 80 + row * 110,
+          x:
+            parentCluster.center.x -
+            parentCluster.width / 2 +
+            30 +
+            column * 180,
+          y:
+            parentCluster.center.y -
+            parentCluster.height / 2 +
+            80 +
+            row * 110,
         },
         data: {
           label: <CourseChipNode course={course} />,
@@ -178,8 +186,7 @@ export default function ClusterMap({
   };
 
   return (
-    //this container is responsible for clipping overflowing edges when clusters are closed, as well as providing a background and border
-    <div className="relative h-[75vh] overflow-hidden rounded-3xl border border-yellow-500/30 bg-[#050505]"> 
+    <div className="h-[75vh] overflow-hidden rounded-3xl border border-yellow-500/30 bg-neutral-950">
       <ReactFlow
         nodes={[...clusterNodes, ...courseNodes]}
         edges={edges}

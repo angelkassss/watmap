@@ -1,0 +1,16 @@
+[33m2834556[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m made the background a bit darker - PDB vibe
+[33m3c52687[m chip
+[33m40e0906[m revamping the graph layout by focus instead of timeeline now
+[33m164a588[m slight UI edit to the focus filteration button - double click to unfocus
+[33m2dc8cda[m created a focus filter system so that users can see what courses are assocated with the corresponding focus groups in ece
+[33mfafffad[m added in clearing functionality for the sidebar
+[33m5951b72[m parent - app/page connecting both C1:CourseGraph and C2: CourseSidebar
+[33m1c438c4[m legend added via colours
+[33m2b02152[m stacked nodes based on y axis
+[33m1d43bbd[m implemented graph logic- spacing, order, position, errror handeling  and styling
+[33m841783b[m edited homepage
+[33m50002a9[m created an intit dataset to test on
+[33m878f787[m fixed spelling errors lol
+[33m6e8fd04[m course's data types have been added
+[33md7ece22[m installed ui and graph helper lib for visualization
+[33m5194414[m Intital watmap project setup
